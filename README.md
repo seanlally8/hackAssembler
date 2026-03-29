@@ -20,7 +20,7 @@ cd file/path/to/directory
 ```bash
 git clone https://github.com/seanlally8/hackAssembler.git
 ```
-4. 3. Navigate to the project root directory
+4. Navigate to the project root directory
 ```bash
 cd hackAssembler
 ```
