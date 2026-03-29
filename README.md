@@ -10,4 +10,19 @@ The file (compile_flags.txt) was generated to support in-line error checking on 
 # Usage
 The program takes .asm file as input and outputs a .hack file containing the binary equivalent.
 
+# Installation
+1. Open terminal
+2. Navigate to the directory where you'd like to install the hackAssembler.
+'''cd file/path/to/directory'''
+3. Clone the github repository
+'''git clone [<repository_url>](https://github.com/seanlally8/hackAssembler.git) .'''
+4. Build hackAssembler
+'''make hackAssembler'''
+5. Run program (if you have .asm file written in the hackAssembly language, you can replace "Fill.asm" with the file path to your code.
+'''./build/hackAssembler Fill.asm'''
+
+
+
+
+
 
