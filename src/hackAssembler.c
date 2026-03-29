@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
     if (newfilename[t] == '.'){
       newfilename[t + 1] = '\0';
       strcat(newfilename, hack);
+      printf("%s", newfilename);
       break;
     }
   }
