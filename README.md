@@ -28,7 +28,7 @@ cd hackAssembler
 ```bash
 make hackAssembler
 ```
-6. Run program (if you have .asm file written in the hackAssembly language, you can replace "Fill.asm" with the file path to your code.
+6. Run program (if you have .asm file written in the hackAssembly language, you can replace "Fill.asm" with the file path to your code).
 ```bash
 ./build/hackAssembler Fill.asm
 ```
