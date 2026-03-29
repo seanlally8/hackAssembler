@@ -22,7 +22,7 @@ git clone <https://github.com/seanlally8/hackAssembler.git> .
 ```
 4. 3. Navigate to the project root directory
 ```bash
-cd assembler
+cd hackAssembler
 ```
 5. Build hackAssembler
 ```bash
