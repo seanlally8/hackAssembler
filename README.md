@@ -18,7 +18,7 @@ cd file/path/to/directory
 ```
 3. Clone the github repository
 ```bash
-git clone <https://github.com/seanlally8/hackAssembler.git> .
+git clone https://github.com/seanlally8/hackAssembler.git
 ```
 4. 3. Navigate to the project root directory
 ```bash
