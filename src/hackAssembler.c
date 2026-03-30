@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
   }
 
   char binary_store[100][200] = {0};
+  char symbol_store[100][200] = {0};
   int row = 0;
   while (1){
     if (hasMoreLines(ptr) == -1) {
@@ -48,13 +49,18 @@ int main(int argc, char *argv[])
       if (parse == 0 || parse == 1){
         symbol(parse, temp, instruction);
         symbolBinary(tempcode, temp);
-        strcpy(binary_store[row], tempcode);
+        if (parse == 0){
+          strcpy(binary_store[row], tempcode);
+        }
+        strcpy(symbol_store[row], instruction);
         memset(temp, 0, 200);
         memset(tempcode, 0, 200);
+        row ++;
       }
 
       else if (parse == 2){
         strcpy(binary_store[row], "111");
+        strcpy(symbol_store[row], instruction);
         comp(temp, instruction);
         char *avalue = findM(temp);
         compBinary(tempcode, temp);
