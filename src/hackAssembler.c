@@ -102,6 +102,71 @@ int main(int argc, char *argv[])
   }
 
   // POPULATE SYMBOL TABLE
+  // POPULATE SYMBOL TABLE
+  node *hash_table[100] = {0};
+  unsigned char init_sym[23][7] = {"R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", 
+                                    "R9", "R10", "R11", "R12", "R13", "R14", "R15","SP", 
+                                    "LCL", "ARG", "THIS", "THAT", "SCREEN", "KBD"};
+  unsigned char init_num[23][7] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+                          "11", "12", "13", "14", "15", "0", "1", "2", "3", "4", 
+                          "16384", "24567"};
+  int hashnum;
+  
+  for (int i = 0; i < 23; i++) {
+    hashnum = hash(init_sym[i]) % 100;
+    if (hash_table[hashnum] == NULL){
+      node *n = malloc(sizeof(node));
+      strcpy(n->number, (const char *)init_num[i]);
+      strcpy(n->symbol, (const char *)init_sym[i]);
+      n->next = NULL;
+      hash_table[hashnum] = n;
+    }
+    else {
+      node *n = malloc(sizeof(node));
+      strcpy(n->number, (const char *)init_num[i]);
+      strcpy(n->symbol, (const char *)init_sym[i]);
+      n->next = hash_table[hashnum];
+      hash_table[hashnum] = n;
+    }
+  }
+
+  //////////////////// ERROR CHECKING PRINTF
+  for (int i = 0; i < 100; i++) {
+    if (hash_table[i] != NULL){
+      for (node *ptr = hash_table[i]; ptr != NULL; ptr = ptr->next){
+        printf("%s %s\n", ptr->number, ptr->symbol);
+      }
+    }
+  }
+  //////////////////////////////
+
+  // FIRST PASS TO FIND L INSTRUCTIONS
+  for (int i = 0; i < row; i++) {
+    symbol(1, temp, symbol_store[i]);
+    hashnum = hash((unsigned char*)symbol_store[i]);
+    int line = -1;
+    char buffer[7];
+    if (instructionType(symbol_store[i]) == 1 && hash_table[hashnum] == NULL){
+      node *n = malloc(sizeof(node));
+      sprintf(buffer,"%i", line + 1);
+      strcpy(n->number, buffer);
+      strcpy(n->symbol, temp);
+      n->next = NULL;
+      hash_table[hashnum] = n;
+      }
+    else if (instructionType(symbol_store[i]) == 1 && hash_table[hashnum] != NULL){
+      node *s = malloc(sizeof(node));
+      sprintf(buffer,"%i", line + 1);
+      strcpy(n->number, buffer);
+      strcpy(n->symbol, temp);
+    }
+  }
+    
+
+
+
+
+  // SECOND PASS TO FIND A INSTRUCTIONS
 
 
 
@@ -119,10 +184,6 @@ int main(int argc, char *argv[])
     }
   }
   FILE *hackptr = fopen(newfilename, "w");
-  for (int h = 0; h < row; h++){
-    printf("%s ", binary_store[h]);
-    printf("%i\n", h);
-  }
   for (int z = 0; z < row; z++){ 
     fputs(binary_store[z], hackptr);
     fputc('\n', hackptr);
