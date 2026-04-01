@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "parser.h"
 
 int stringCleaner(char *dirty_string){
   for (int m = 0; m < 100; m++){
@@ -34,4 +35,15 @@ void memFree(char **list, int index){
     free(list[m]);
   }
   free(list);
+}
+  
+//http://www.cse.yorku.ca/~oz/hash.html -- the djb2 hash function developed by Dan Bernstein
+unsigned long hash(unsigned char *str){
+  unsigned long hash = 5381;
+  int c;
+
+  while ((c = *str++)) {
+      hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+  }
+  return hash;
 }

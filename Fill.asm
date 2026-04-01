@@ -10,63 +10,71 @@
 
 @8191
 D=A
-@456
+@total
 M=D
-(84)
+(Outer_Loop)
 	// i = 0:
-  @16
+  @i
   M=0
 	// if (KBD == 0) goto INNER_LOOP0
-  @18
+  @KBD
   D=M
-  @78
+  @INNER_LOOP0
   D;JEQ
 // else if (KBD != 0)
-  @67
+  @KBD
   D=M
-  @67
+  @INNER_LOOP1
   D;JNE
 
-(7367) 
-  D=M-D 
-  @2930
+(INNER_LOOP0)
+	// if(i==8191) go to OUTER_LOOP
+  @i
+  D=M
+  @total
+  D=M-D
+  @Outer_Loop
+  D;JEQ
+	//	*(SCREEN + i) = 0
+  @SCREEN
   D=A
-  @23
+  @i
   A=D+M
   M=0
   //i = i+1 	
-  @17
+  @i
   M=M+1
   //  if (KBD != 0) goto INNER_LOOP1
-  @92
+  @KBD
   D=M
-  @30
+  @INNER_LOOP1
   D;JNE
 
-  @192
+  @INNER_LOOP0
   0;JMP
 
-(274)
-  //		if (i==8191) goto OUTER_LOOP		@9283
+(INNER_LOOP1)
+  //		if (i==8191) goto OUTER_LOOP		
+  @i
   D=M
-  @82
+  @total
   D=M-D
-  @12
+  @Outer_Loop
   D;JEQ
 	//	*(SCREEN + i) = -1
-  @934
+  @SCREEN
   D=A
-  @236
+  @i
   A=D+M
   M=-1
   //i = i+1 	
-  @647
+  @i
   M=M+1
   // if(KBD==0) goto INNER_LOOP0
-  @463
+  @KBD
   D=M
-  @930
+  @INNER_LOOP0
   D;JEQ
-  @213
+  @INNER_LOOP1
   0;JMP
 

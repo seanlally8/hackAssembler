@@ -14,6 +14,11 @@ typedef struct {
   char symbolic[8][4];
 } jump_dict;
 
+typedef struct node{
+  char number[7];
+  char symbol[50];
+  struct node *next;
+} node;
 
 // FUNCTIONS
 void symbolBinary(char *temp, char * sym_string);

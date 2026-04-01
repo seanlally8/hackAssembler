@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-// All your header file code (declarations, etc.) goes here
+// FUNCTIONS
 FILE *openFile(char *ptr);
 int hasMoreLines(FILE *file);
 int advance(FILE *ptr, char *inst_string);
