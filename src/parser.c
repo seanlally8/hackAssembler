@@ -64,9 +64,6 @@ int advance(FILE *ptr, char *inst_string){
   char buffer[200];
   while (bool == 0){
     fgets(buffer, 200, ptr);
-    if (feof(ptr)){
-      return 1;
-    }
     for (int i = 0; i < (int)strlen(buffer); i++){
       if (buffer[i] == '/'){
         if (buffer[i + 1] != '/'){
@@ -79,7 +76,7 @@ int advance(FILE *ptr, char *inst_string){
       else if (buffer[i] == ' ') {        
         continue;
       }
-      else if (buffer[i] == '\n'){
+      else if (buffer[i] == '\n' || buffer[i] =='\r'){
         break;
       }
       else if (buffer[i]=='@' || buffer[i]== '(' || buffer[i]== '0' || buffer[i]== '1' || buffer[i]== '-' || 

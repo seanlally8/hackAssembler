@@ -5,18 +5,16 @@
 #include "code.h"
 #include "helper.h"
 
-int main(int argc, char *argv[])
-{
-  
-  if (argc != 2){
-    printf("Two arguments please.\n");
-    return 1;
-  }
+int main(int argc, char *argv[]) {
+  // DECLARE GLOBAL VARIABLES //
+  node *hash_table[178] = {0};
+  unsigned char init_sym[23][7] = {"R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", 
+                                    "R9", "R10", "R11", "R12", "R13", "R14", "R15","SP", 
+                                    "LCL", "ARG", "THIS", "THAT", "SCREEN", "KBD"};
+  unsigned char init_num[23][7] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+                          "11", "12", "13", "14", "15", "0", "1", "2", "3", "4", 
+                          "16384", "24567"};
 
-  char *instruction = calloc(200, sizeof(char));
-  if (instruction == NULL){
-    return 1;
-  }
   char *temp = calloc(200, sizeof(char));
   if (temp == NULL){
     return 1;
@@ -25,103 +23,32 @@ int main(int argc, char *argv[])
   if (temp == NULL){
     return 1;
   }
+  char *instruction = calloc(200, sizeof(char));
+  if (instruction == NULL){
+    return 1;
+  }
   char *newfilename = calloc(100, sizeof(char));
   if (newfilename == NULL){
-    return 1;
-  }
-
-  char *filename = argv[1];
-  int parse;
-  char binary_store[32000][200] = {0};
-  char symbol_store[32000][200] = {0};
-  int row = 0;
-  int line = 0;
-
-  FILE *ptr = openFile(filename);
-  if (ptr == NULL) {
-    printf("file could not be opened");
-    return 1;
-  }
-
-  while (1){
-    if (hasMoreLines(ptr) == -1) {
-      printf("Invalid code");
       return 1;
     }
-    
-    else if (hasMoreLines(ptr) == 0){
-      // heart of the program.
+  char *filename = argv[1];
+  char *hack = "hack";
+  char buffer[50];
 
+  int parse;
+  int line = 0;
+  int hashnum;
 
-      int error = advance(ptr, instruction);
-      if (error == -1){
-        printf("Undefined behavior in 'advance' function");
-        return 1;
-      }
-
-      parse = instructionType(instruction);
-      strcpy(symbol_store[row], instruction);
-      printf("%s\n", instruction);
-
-      if (parse == 0) {
-        // Keep a row in the final instruction set for this A Instruction; we will translate later using
-        // symbol table
-        row++;
-        line++;
-      }
-
-      else if (parse == 1) {
-        row++;
-      }
-
-      else if (parse == 2){
-        strcpy(binary_store[line], "111");
-        comp(temp, instruction);
-        char *avalue = findM(temp);
-        compBinary(tempcode, temp);
-        strcat(binary_store[line], avalue);
-        strcat(binary_store[line], tempcode);
-        memset(temp, 0, 200);
-        memset(tempcode, 0, 17);
-
- 
-        dest(temp, instruction);
-        destBinary(tempcode, temp);
-        strcat(binary_store[line], tempcode);
-        memset(temp, 0, 200);
-        memset(tempcode, 0, 17);
-
-        jump(temp, instruction);
-        jumpBinary(tempcode, temp);
-        strcat(binary_store[line], tempcode);
-        memset(temp, 0, 200);
-        memset(tempcode, 0, 17);
-        row++;
-        line++;
-      }
-      memset(instruction, 0, 200);
-    }
-
-    else if (hasMoreLines(ptr) == 1){
-      // close file
-      fclose(ptr);
-      break;
-    }
+  /////////////////////////////////////////////////////
+  // Check user CLI input //
+  if (argc != 2){
+    printf("Two arguments please.\n");
+    return 1;
   }
 
-  // POPULATE SYMBOL TABLE
-  // POPULATE SYMBOL TABLE
-  node *hash_table[1000] = {0};
-  unsigned char init_sym[23][7] = {"R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", 
-                                    "R9", "R10", "R11", "R12", "R13", "R14", "R15","SP", 
-                                    "LCL", "ARG", "THIS", "THAT", "SCREEN", "KBD"};
-  unsigned char init_num[23][7] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
-                          "11", "12", "13", "14", "15", "0", "1", "2", "3", "4", 
-                          "16384", "24567"};
-  int hashnum;
-  
+  //// INITIALIZE HASH TABLE TO HOLD SYMBOLS AND CORRESPONDING ADDRESSES ////
   for (int i = 0; i < 23; i++) {
-    hashnum = hash(init_sym[i]) % 1000;
+    hashnum = hash(init_sym[i]) % 178;
     if (hash_table[hashnum] == NULL){
       node *n = malloc(sizeof(node));
       strcpy(n->number, (const char *)init_num[i]);
@@ -138,152 +65,189 @@ int main(int argc, char *argv[])
     }
   }
 
-  ////////////////// PREPARATORY TESTS////////////////////
- /* int c = 0;8
-  for (int i = 0; i < row; i++){
-    if (instructionType(symbol_store[i]) != 1) { 
-      printf("%i symbol_store = %s\n", c, symbol_store[i]);
-      c++;
-    }
-    else {
-      printf("symbol_store = %s\n", symbol_store[i]);
-    }
+
+  //// OPEN INPUT OUTPUT FILES ////////////////////////
+  FILE *ptr = openFile(filename);
+  if (ptr == NULL) {
+    printf("file could not be opened");
+    return 1;
   }
-  for (int i = 0; i < line; i++){
-    printf("%i binary_store = %s\n", i, binary_store[i]);
-  }
-  for (int i = 0; i < 100; i++) {
-    if (hash_table[i] != NULL){
-      for (node *ptr = hash_table[i]; ptr != NULL; ptr = ptr->next){
-        printf("hash number: %i             hash symbol: %s\n", i, ptr->symbol);
-      }
-    }
-  }*/
-  /////////////////////////////////////////////////////////
-
-  // FIRST PASS TO FIND L INSTRUCTIONS
-  int line_num = -1;
-  for (int i = 0; i < row; i++) {
-
-    int type = instructionType(symbol_store[i]);
-    symbol(type, temp, symbol_store[i]);
-    hashnum = hash((unsigned char *)temp) % 1000;
-    char line_num_str[12] = {0};
-    sprintf(line_num_str, "%i", line_num + 1);
-
-    if (type != 1) {
-      line_num++;
-    }
-
-    else if (type == 1 && hash_table[hashnum] == NULL){
-      node *n = malloc(sizeof(node));
-      strcpy(n->number, line_num_str);
-      strcpy(n->symbol, temp);
-      n->next = NULL;
-      hash_table[hashnum] = n;
-    }
-    
-    else if (type == 1 && hash_table[hashnum] != NULL) {
-      node *n = malloc(sizeof(node));
-      strcpy(n->number, line_num_str);
-      strcpy(n->symbol, temp);
-      n->next = hash_table[hashnum];
-      hash_table[hashnum] = n;
-    }
-    memset(temp, 0, 200);
-  }
-
-
-
-  /*for (int g = 0; g < 100; g++){
-    for (node *ptr = hash_table[g]; ptr != NULL; ptr = ptr->next){
-      printf("Hash Number is %ul,             Address is %s,             Symbol is %s\n", g, ptr->number, ptr->symbol);
-    }
-  }*/
-
-
-
-  // SECOND PASS TO FIND A INSTRUCTIONS AND TRANSLATE
-
-  line_num = 0;
-  int var = 16;
-  for (int i = 0; i < row; i++) {
-
-    int type = instructionType(symbol_store[i]);
-    symbol(type, temp, symbol_store[i]);
-    hashnum = hash((unsigned char *)temp) % 1000;
-    char *hold;
-    strtol(temp, &hold, 10);
-
-    if (type == 0 && strcmp(temp, hold) != 0) {
-      symbolBinary(tempcode, temp);
-      strcpy(binary_store[line_num], tempcode);
-      line_num++;
-    }
-
-    else if (type == 0 && hash_table[hashnum] != NULL) {
-      for (node *ptr = hash_table[hashnum]; ptr != NULL; ptr = ptr->next){
-        if (strcmp(ptr->symbol, temp) == 0) {
-          symbolBinary(tempcode, ptr->number);
-          strcpy(binary_store[line_num], tempcode);
-        }
-      }
-      line_num++;
-    }
-   
-    else if (type == 0 && hash_table[hashnum] == NULL) {
-      printf("var value %i          ", var);
-      char buffer[12] = {0};
-      sprintf(buffer, "%i", var);
-      node *n = malloc(sizeof(node));
-      strcpy(n->symbol, temp);
-      strcpy(n->number, buffer);
-      n->next = NULL;
-      hash_table[hashnum] = n;
-      symbolBinary(tempcode, buffer);
-      strcpy(binary_store[line_num], tempcode);
-      line_num++;
-      var++;
-    }
-
-    else if (type != 1) {
-      line_num++;
-    }
-    memset(temp, 0, 200);
-    memset(tempcode, 0, 17);
-  }
-  for (int g = 0; g < line; g++) {
-    printf("%s\n", binary_store[g]);
-  }
-
-
-
-  // FINAL STEP. Generate new file name then write the binary code to file.
-  char *hack = "hack";
   strcpy(newfilename, argv[1]);
   for (int t = 0; t < (int)strlen(argv[1]); t++){
     if (newfilename[t] == '.'){
       newfilename[t + 1] = '\0';
       strcat(newfilename, hack);
-      printf("%s\n", newfilename);
       break;
     }
   }
   FILE *hackptr = fopen(newfilename, "w");
-  for (int i = 0; i < row; i++){
-    if (hash_table[i] !=NULL){
-      for (node *ptr = hash_table[1]; ptr != NULL; ptr = ptr->next) {
-        printf("%s, %s", hash_table[i]->number, hash_table[i]->symbol);
+  if (hackptr == NULL) {
+    printf("file could not be opened");
+    return 1;
+  }
+  
+  //// PASS 1 - LOOK FOR L INSTRUCTION, ADD TO HASH TABLE
+  line = -1;
+  while (hasMoreLines(ptr) != 1){
+
+    ///// ERROR CHECK //////
+    if (hasMoreLines(ptr) == -1) {
+      printf("Invalid code");
+      return 1;
+    }
+    
+    /// MORE LINES TO GO ///
+    else if (hasMoreLines(ptr) == 0){
+
+      /// ADVANCE TO NEXT INSTRUCTION ///
+      int error = advance(ptr, instruction);
+      if (error == -1){
+        printf("Undefined behavior in 'advance' function");
+        return 1;
       }
+
+      /// DETERMINE INSTRUCTION parse, EXTRACT SYMBOL, SET HASH NUMBER, CONVERT LINE NUMBER TO STRING///
+      parse = instructionType(instruction);
+      symbol(parse, temp, instruction);
+      hashnum = hash((unsigned char *)temp) % 178;
+      char line_str[12] = {0};
+      sprintf(line_str, "%i", line + 1);
+
+
+      /// IF A OR C INSTRUCTION TRACK LINE NUMBER ///
+      if (parse != 1) {
+        line++;
+      }
+
+      /// IF L INSTRUCTION: ADD TO HASH TABLE ///
+
+      else if ( parse == 1 && hash_table[hashnum] == NULL){
+        node *n = malloc(sizeof(node));
+        strcpy(n->number, line_str);
+        strcpy(n->symbol, temp);
+        n->next = NULL;
+        hash_table[hashnum] = n;
+      }
+      
+      else if (parse == 1 && hash_table[hashnum] != NULL) {
+        node *n = malloc(sizeof(node));
+        strcpy(n->number, line_str);
+        strcpy(n->symbol, temp);
+        n->next = hash_table[hashnum];
+        hash_table[hashnum] = n;
+      }
+      memset(temp, 0, 200);
+      memset(instruction, 0, 200);
     }
   }
-  for (int z = 0; z < row; z++){ 
-    fputs(binary_store[z], hackptr);
-    fputc('\n', hackptr);
-  }
 
-  fclose(hackptr);
-  for (int j = 0; j < 100; j++){
+  /// PASS 2: FIND A INSTRUCTION (TRANSLATE DECIMAL VALUES, TRANSLATE PRE_EXISTING VALUES, STORE
+  /// AND TRANSLATE NEW VALUES) AND C INSTRUCTIONS ////
+  
+  int var = 16;
+  int button = 0;
+  rewind(hackptr);
+  rewind(ptr);
+  while (hasMoreLines(ptr) != 1){
+
+    ///// ERROR CHECK //////
+    if (hasMoreLines(ptr) == -1) {
+      printf("Invalid code");
+      return 1;
+    }
+
+    /// MORE LINES TO GO ///
+    else if (hasMoreLines(ptr) == 0){
+
+      /// ADVANCE TO NEXT INSTRUCTION ///
+      int error = advance(ptr, instruction);
+      if (error == -1){
+        printf("Undefined behavior in 'advance' function");
+        return 1;
+      }
+      /// DETERMINE INSTRUCTION parse, EXTRACT SYMBOL, SET HASH NUMBER, CONVERT LINE NUMBER TO STRING///
+
+      parse = instructionType(instruction);
+      symbol(parse, temp, instruction);
+      hashnum = hash((unsigned char *)temp) % 178;
+      char *hold;
+      strtol(temp, &hold, 10);
+
+      if (parse == 0 && strcmp(temp, hold) != 0) {
+        symbolBinary(tempcode, temp);
+        fputs(tempcode, hackptr);
+        fputc('\n', hackptr);
+      }
+
+      else if (parse == 0 && hash_table[hashnum] != NULL) {
+        for (node *ptr = hash_table[hashnum]; ptr != NULL; ptr = ptr->next){
+          if (strcmp(ptr->symbol, temp) == 0) {
+            symbolBinary(tempcode, ptr->number);
+            fputs(tempcode, hackptr);
+            fputc('\n', hackptr);
+            button = 1;
+          } 
+        }
+        if (button == 0) {
+          sprintf(buffer, "%i", var);
+          node *n = malloc(sizeof(node));
+          strcpy(n->symbol, temp);
+          strcpy(n->number, buffer);
+          n->next = hash_table[hashnum];
+          hash_table[hashnum] = n;
+          symbolBinary(tempcode, buffer);
+          fputs(tempcode, hackptr);
+          fputc('\n', hackptr);
+          var++;
+        }
+      }
+     
+      else if (parse == 0 && hash_table[hashnum] == NULL) {
+        sprintf(buffer, "%i", var);
+        node *n = malloc(sizeof(node));
+        strcpy(n->symbol, temp);
+        strcpy(n->number, buffer);
+        n->next = NULL;
+        hash_table[hashnum] = n;
+        symbolBinary(tempcode, buffer);
+        fputs(tempcode, hackptr);
+        fputc('\n', hackptr);
+        var++;
+        rewind(hackptr);
+      }
+
+      else if (parse == 2){
+        strcpy(buffer, "111");
+        comp(temp, instruction);
+        char *avalue = findM(temp);
+        compBinary(tempcode, temp);
+        strcat(buffer, avalue);
+        strcat(buffer, tempcode);
+        memset(temp, 0, 200);
+        memset(tempcode, 0, 17);
+ 
+        dest(temp, instruction);
+        destBinary(tempcode, temp);
+        strcat(buffer, tempcode);
+        memset(temp, 0, 200);
+        memset(tempcode, 0, 17);
+
+        jump(temp, instruction);
+        jumpBinary(tempcode, temp);
+        strcat(buffer, tempcode);
+        fputs(buffer, hackptr);
+        fputc('\n', hackptr);
+        memset(temp, 0, 200);
+        memset(tempcode, 0, 17);
+      }
+      memset(temp, 0, 200);
+      memset(tempcode, 0, 17);
+      memset(buffer, 0, 50);
+    } 
+  } 
+  
+
+  for (int j = 0; j < 178; j++){
     if (hash_table[j] != NULL){
       node *ptr = hash_table[j];
       while (ptr != NULL){
@@ -297,7 +261,8 @@ int main(int argc, char *argv[])
   free(temp);
   free(tempcode);
   free(newfilename);
-  return EXIT_SUCCESS;
+  fclose(ptr);
+  fclose(hackptr);
+  return 0;
 }
-
 
