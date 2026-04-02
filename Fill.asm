@@ -10,7 +10,7 @@
 
 @8191
 D=A
-@total
+@Total
 M=D
 (Outer_Loop)
 	// i = 0:
@@ -31,7 +31,7 @@ M=D
 	// if(i==8191) go to OUTER_LOOP
   @i
   D=M
-  @total
+  @Total
   D=M-D
   @Outer_Loop
   D;JEQ
@@ -57,7 +57,7 @@ M=D
   //		if (i==8191) goto OUTER_LOOP		
   @i
   D=M
-  @total
+  @Total
   D=M-D
   @Outer_Loop
   D;JEQ

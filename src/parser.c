@@ -124,11 +124,12 @@ int instructionType(char *inst_string){
 // symbol. if current instruction is (xxx) returns xxx, as a string. If @xxx, returns xxx as a string. Called if L or A instruction type.
 void symbol(int inst_type, char *temp, char *inst_string){
   int length = strcspn(inst_string, ")");
-  //int size = strlen(inst_string[0]); 
+  int size = strlen(inst_string); 
   if (inst_type == 0){
-    for (int k = 0; k < length; k++){
+    for (int k = 0; k < size; k++){
       temp[k] = inst_string[k + 1];
     }
+    temp[size] = '\0'; 
   }
   else if (inst_type == 1){
     for (int k = 0; k < length; k++){  
